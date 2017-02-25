@@ -19,6 +19,6 @@ type, public :: ImageStatus_CA<br />
 &nbsp;&nbsp;!<br />
 end type ImageStatus_CA<br />
 
-Next, we declare a coarray object from that type:
+Next, we declare a coarray object from that type:<br />
 type (ImageStatus_CA), public, codimension[*], save :: ImageStatus_CA_Object<br />
 
