@@ -15,7 +15,10 @@ Firstly, we declare a derived type containing an atomic integer array, with dime
 type, public :: ImageStatus_CA<br />
 &nbsp;&nbsp;private<br />
 &nbsp;&nbsp;!<br />
-&nbsp;&nbsp;integer(atomic_int_kind), dimension (1:NumImages) :: & mA_atomic_intImageActivityFlag !mA is short for member array<br />
+&nbsp;&nbsp;integer(atomic_int_kind), dimension (1:NumImages) :: & mA_atomic_intImageActivityFlag ! mA is short for member array<br />
 &nbsp;&nbsp;!<br />
 end type ImageStatus_CA<br />
+
+Next, we declare a coarray object from that type:
+type (ImageStatus_CA), public, codimension[*], save :: ImageStatus_CA_Object<br />
 
