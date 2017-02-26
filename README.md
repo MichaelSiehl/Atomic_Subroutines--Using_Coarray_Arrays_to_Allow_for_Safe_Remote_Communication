@@ -30,8 +30,8 @@ call atomic_define (ImageStatus_CA_Object[intRemoteImage] % mA_atomic_intImageAc
 <br />
 ! executed on image 1:<br />
 do...<br />
-  ! intRemoteImage has values 2, 3, 4, resp. <br />
-  call atomic_ref (intImageActivityFlag, ImageStatus_CA_Object %   mA_atomic_intImageActivityFlag(intRemoteImage))<br />
+&nbsp;&nbsp;! intRemoteImage has values 2, 3, 4, resp. <br />
+&nbsp;&nbsp;call atomic_ref (intImageActivityFlag, ImageStatus_CA_Object %   mA_atomic_intImageActivityFlag(intRemoteImage))<br />
 end do<br />
 <br />
 As far as to my current knowledge, this simple technique provides a safe way to prevent that atomic values are getting overwritten by other remote processes with there call to atomic_define and thus, that the atomic values can safely be consumed locally by the atomic_ref atomic subroutine.
