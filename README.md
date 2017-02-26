@@ -22,7 +22,7 @@ end type ImageStatus_CA<br />
 Next, we declare a coarray object from that type:<br />
 type (ImageStatus_CA), public, codimension[*], save :: ImageStatus_CA_Object<br />
 
-With that, we can use the this_image() intrinsic in place of a normal array subscript to access a unique communication channel for the current image: '...% mA_atomic_intImageActivityFlag(this_image())'. See the following calls to atomic_define and atomic_ref:
+With that, we can use the this_image() intrinsic in place of a normal array subscript to access a unique communication channel for the current image: '...% mA_atomic_intImageActivityFlag(this_image())'. See the following calls to atomic_define and atomic_ref:<br />
 <br />
 ! executed on images 2, 3, and 4:<br />
 intRemoteImage = 1<br />
