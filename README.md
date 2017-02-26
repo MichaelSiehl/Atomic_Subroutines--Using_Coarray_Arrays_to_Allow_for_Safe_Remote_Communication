@@ -26,7 +26,7 @@ With that, we can use the this_image() intrinsic in place of a normal array subs
 <br />
 ! executed on images 2, 3, and 4:<br />
 intRemoteImage = 1<br />
-call atomic_define (ImageStatus_CA_Object[intRemoteImage] % mA_atomic_intImageActivityFlag(this_image()), intImageActivityFlag)<br />
+call atomic_define (ImageStatus_CA_Object[intRemoteImage] % mA_atomic_intImageActivityFlag(this_image()), &<br /> &nbsp;&nbsp;intImageActivityFlag)<br />
 <br />
 ! executed on image 1:<br />
 do...<br />
