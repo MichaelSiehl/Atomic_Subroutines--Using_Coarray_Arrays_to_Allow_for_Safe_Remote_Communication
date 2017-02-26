@@ -22,10 +22,16 @@ end type ImageStatus_CA<br />
 Next, we declare a coarray object from that type:<br />
 type (ImageStatus_CA), public, codimension[*], save :: ImageStatus_CA_Object<br />
 
-With that, we can use an intImageNumber variable for both purposes: (1) as the usual cosubscript within square brackets for accessing a coarray object on another image: 'ImageStatus_CA_Object [intImageNumber] %...', and (2), at the same time, as a normal array subscript to access the unique communication channel to that remote image: '...% mA_atomic_intImageActivityFlag(intImageNumber)'. See the following calls to atomic_define and atomic_ref:
-
-call atomic_define(ImageStatus_CA_Object [intImageNumber] % mA_atomic_intImageActivityFlag(intImageNumber), intImageActivityFlag)<br />
-
-call atomic_ref(intImageActivityFlag, ImageStatus_CA_Object %   mA_atomic_intImageActivityFlag(intImageNumber))<br />
-
+With that, we can use the this_image() intrinsic in place of a normal array subscript to access a unique communication channel for the current image: '...% mA_atomic_intImageActivityFlag(this_image())'. See the following calls to atomic_define and atomic_ref:
+<br />
+! executed on images 2, 3, and 4:<br />
+intRemoteImage = 1<br />
+call atomic_define (ImageStatus_CA_Object[intRemoteImage] % mA_atomic_intImageActivityFlag(this_image()), intImageActivityFlag)<br />
+<br />
+! executed on image 1:<br />
+do...<br />
+  ! intRemoteImage has values 2, 3, 4, resp. <br />
+  call atomic_ref (intImageActivityFlag, ImageStatus_CA_Object %   mA_atomic_intImageActivityFlag(intRemoteImage))<br />
+end do<br />
+<br />
 As far as to my current knowledge, this simple technique provides a safe way to prevent that atomic values are getting overwritten by other remote processes with there call to atomic_define and thus, that the atomic values can safely be consumed locally by the atomic_ref atomic subroutine.
