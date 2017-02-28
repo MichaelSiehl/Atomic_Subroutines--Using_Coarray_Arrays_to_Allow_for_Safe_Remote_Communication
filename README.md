@@ -31,7 +31,7 @@ call atomic_define (ImageStatus_CA_Object[intRemoteImage] % mA_atomic_intImageAc
 ! executed on image 1:<br />
 do...<br />
 .<br />
-&nbsp;&nbsp;! intRemoteImage has values 2, 3, 4, resp. <br />
+&nbsp;&nbsp;! intRemoteImage has values 2, 3, 4, resp.: <br />
 &nbsp;&nbsp;call atomic_ref (intImageActivityFlag, ImageStatus_CA_Object %   mA_atomic_intImageActivityFlag(intRemoteImage))<br />
 .<br />
 end do<br />
