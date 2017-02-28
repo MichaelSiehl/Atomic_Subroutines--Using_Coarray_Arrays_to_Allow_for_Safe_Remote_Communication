@@ -2,7 +2,7 @@
 Fortran 2008 coarray programming with unordered execution segments (user-defined ordering) - Atomic Subroutines: Using Coarray Arrays to Allow for Safe Remote Communication
 
 # Overview
-This GitHub repository aims to show a simple coarray programming technique, for use with atomic subroutines, that prevents that coarray values are getting overwritten by other coarray images (i.e. remote processes): The use of coarray arrays does allow for safe communication among a number of coarray images. 
+This GitHub repository aims to show a simple coarray programming technique, for use with atomic subroutine, that prevents that coarray values are getting overwritten by other coarray images (i.e. remote processes): The use of coarray arrays does allow for safe communication among a number of coarray images. 
 
 # Problem and Solution
 One problem with remote coarray communication is that, if multiple coarray images (say images 2, 3, 4) require to transmit a value to the same remote image (say image 1) through the same scalar coarray variable, a coarray image (say image 2) will probably overwrite the already transmitted values from the other images (3 and 4) before they where consumed by the remote image (1). To prevent this from happening, we may use coarray arrays to remotely transmit scalar coarray values: Every coarray image (2, 3, 4) then uses it's own coarray array index as it's own unique communication channel to a single coarray image (1). Then, the remote coarray image (1) can consume the transmitted values each safely through it's own coarray array index (2, 3, 4).
@@ -30,8 +30,10 @@ call atomic_define (ImageStatus_CA_Object[intRemoteImage] % mA_atomic_intImageAc
 <br />
 ! executed on image 1:<br />
 do...<br />
+.<br />
 &nbsp;&nbsp;! intRemoteImage has values 2, 3, 4, resp. <br />
 &nbsp;&nbsp;call atomic_ref (intImageActivityFlag, ImageStatus_CA_Object %   mA_atomic_intImageActivityFlag(intRemoteImage))<br />
+.<br />
 end do<br />
 <br />
 As far as to my current knowledge, this simple technique provides a safe way to prevent that atomic values are getting overwritten by other remote processes with there call to atomic_define and thus, that the atomic values can safely be consumed locally by the atomic_ref atomic subroutine.
