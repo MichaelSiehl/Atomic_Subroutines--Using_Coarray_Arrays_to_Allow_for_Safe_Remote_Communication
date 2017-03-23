@@ -14,25 +14,29 @@ Firstly, we declare a derived type containing an atomic integer array, with dime
 ```fortran
 type, public :: ImageStatus_CA
   private
-  integer(atomic_int_kind), dimension (1:NumImages) :: mA_atomic_intImageActivityFlag ! mA is short for member array
+  ! mA is short for member array:
+  integer(atomic_int_kind), dimension (1:NumImages) :: mA_atomic_intImageActivityFlag
 end type ImageStatus_CA
 ```
 Next, we declare a coarray object from that type:
 ```fortran
-type (ImageStatus_CA), public, codimension[*], save :: ImageStatus_CA_Object
+type (ImageStatus_CA), public, codimension[*], save :: &
+      ImageStatus_CA_Object
 ```
 With that, we can use the this_image() intrinsic in place of a normal array subscript to access a unique communication channel for the current image: '...% mA_atomic_intImageActivityFlag(this_image())'. See the following calls to atomic_define and atomic_ref:
 ```fortran
 ! executed on images 2, 3, and 4:
 intRemoteImage = 1
-call atomic_define (ImageStatus_CA_Object[intRemoteImage] % mA_atomic_intImageActivityFlag(this_image()), intImageActivityFlag)
+call atomic_define (ImageStatus_CA_Object[intRemoteImage] % mA_atomic_intImageActivityFlag(this_image()), &
+                      intImageActivityFlag)
 ```
 ```fortran
 ! executed on image 1:
 do...
   ..
   ! intRemoteImage has values 2, 3, 4, resp.:
-  call atomic_ref (intImageActivityFlag, ImageStatus_CA_Object % mA_atomic_intImageActivityFlag(intRemoteImage))
+  call atomic_ref (intImageActivityFlag, &
+      ImageStatus_CA_Object % mA_atomic_intImageActivityFlag(intRemoteImage))
   ..
 end do
 ```
