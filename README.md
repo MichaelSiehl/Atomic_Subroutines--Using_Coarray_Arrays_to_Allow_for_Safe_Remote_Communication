@@ -25,15 +25,15 @@ With that, we can use the this_image() intrinsic in place of a normal array subs
 ```fortran
 ! executed on images 2, 3, and 4:
 intRemoteImage = 1
-call atomic_define (ImageStatus_CA_Object[intRemoteImage] % mA_atomic_intImageActivityFlag(this_image()), &    intImageActivityFlag)
+call atomic_define (ImageStatus_CA_Object[intRemoteImage] % mA_atomic_intImageActivityFlag(this_image()), intImageActivityFlag)
 ```
 ```fortran
 ! executed on image 1:
 do...
-  .
+  ..
   ! intRemoteImage has values 2, 3, 4, resp.:
-  call atomic_ref (intImageActivityFlag, ImageStatus_CA_Object %   mA_atomic_intImageActivityFlag(intRemoteImage))
-  .
+  call atomic_ref (intImageActivityFlag, ImageStatus_CA_Object % mA_atomic_intImageActivityFlag(intRemoteImage))
+  ..
 end do
 ```
 As far as to my current knowledge, this simple technique provides a safe way to prevent that atomic values are getting overwritten by other remote processes with there call to atomic_define and thus, that the atomic values can safely be consumed locally by the atomic_ref atomic subroutine.
