@@ -11,29 +11,29 @@ That programming technique is supported for atomic subroutines by the compilers 
 The following code snippets show this basically:
 
 Firstly, we declare a derived type containing an atomic integer array, with dimension (1:NumImages), where NumImages shall be a global constant (Parameter), containing a max number of images:
-
-type, public :: ImageStatus_CA<br />
-&nbsp;&nbsp;private<br />
-&nbsp;&nbsp;!<br />
-&nbsp;&nbsp;integer(atomic_int_kind), dimension (1:NumImages) :: mA_atomic_intImageActivityFlag ! mA is short for member array<br />
-&nbsp;&nbsp;!<br />
-end type ImageStatus_CA<br />
-
-Next, we declare a coarray object from that type:<br />
-type (ImageStatus_CA), public, codimension[*], save :: ImageStatus_CA_Object<br />
-
-With that, we can use the this_image() intrinsic in place of a normal array subscript to access a unique communication channel for the current image: '...% mA_atomic_intImageActivityFlag(this_image())'. See the following calls to atomic_define and atomic_ref:<br />
-<br />
-! executed on images 2, 3, and 4:<br />
-intRemoteImage = 1<br />
-call atomic_define (ImageStatus_CA_Object[intRemoteImage] % mA_atomic_intImageActivityFlag(this_image()), &<br /> &nbsp;&nbsp;intImageActivityFlag)<br />
-<br />
-! executed on image 1:<br />
-do...<br />
-.<br />
-&nbsp;&nbsp;! intRemoteImage has values 2, 3, 4, resp.: <br />
-&nbsp;&nbsp;call atomic_ref (intImageActivityFlag, ImageStatus_CA_Object %   mA_atomic_intImageActivityFlag(intRemoteImage))<br />
-.<br />
-end do<br />
-<br />
+```fortran
+type, public :: ImageStatus_CA
+  private
+  integer(atomic_int_kind), dimension (1:NumImages) :: mA_atomic_intImageActivityFlag ! mA is short for member array
+end type ImageStatus_CA
+```
+Next, we declare a coarray object from that type:
+```fortran
+type (ImageStatus_CA), public, codimension[*], save :: ImageStatus_CA_Object
+```
+With that, we can use the this_image() intrinsic in place of a normal array subscript to access a unique communication channel for the current image: '...% mA_atomic_intImageActivityFlag(this_image())'. See the following calls to atomic_define and atomic_ref:
+```fortran
+! executed on images 2, 3, and 4:
+intRemoteImage = 1
+call atomic_define (ImageStatus_CA_Object[intRemoteImage] % mA_atomic_intImageActivityFlag(this_image()), &    intImageActivityFlag)
+```
+```fortran
+! executed on image 1:
+do...
+  .
+  ! intRemoteImage has values 2, 3, 4, resp.:
+  call atomic_ref (intImageActivityFlag, ImageStatus_CA_Object %   mA_atomic_intImageActivityFlag(intRemoteImage))
+  .
+end do
+```
 As far as to my current knowledge, this simple technique provides a safe way to prevent that atomic values are getting overwritten by other remote processes with there call to atomic_define and thus, that the atomic values can safely be consumed locally by the atomic_ref atomic subroutine.
